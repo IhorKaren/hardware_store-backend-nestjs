@@ -30,9 +30,9 @@ export class AuthGuard implements CanActivate {
       const user = await this.userModel.findById(_id);
 
       request['user'] = user;
-      return true;
     } catch {
       throw new UnauthorizedException();
     }
+    return true;
   }
 }
