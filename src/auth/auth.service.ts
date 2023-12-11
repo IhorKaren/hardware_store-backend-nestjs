@@ -20,16 +20,14 @@ export class UsersService {
     return createdUser;
   }
 
-  async findOneByEmail(email: string): Promise<User | null> {
+  async findEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({ email });
     return user || null;
   }
 
-  async findByIdAndSetToken(_id: Types.ObjectId): Promise<User> {
+  async setToken(_id: Types.ObjectId): Promise<User> {
     const token = await this.jwtService.signAsync({ _id });
-
     const user = await this.userModel.findByIdAndUpdate(_id, { token });
-
     return { ...user, token };
   }
 }
