@@ -19,7 +19,7 @@ export class AuthGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const { authorization } = request.headers;
-    const [bearer, token] = authorization.split(' ') ?? [];
+    const [bearer, token] = authorization?.split(' ') ?? [];
 
     if (bearer !== 'Bearer' || !token) {
       throw new UnauthorizedException();

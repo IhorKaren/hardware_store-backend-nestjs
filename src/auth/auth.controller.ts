@@ -23,7 +23,7 @@ export class UsersController {
   async signUp(@Body() createUserDto: CreateUserDto) {
     const { name, email, password } = createUserDto;
 
-    const existedUser = await this.usersService.findEmail(email);
+    const existedUser = await this.usersService.findByEmail(email);
 
     if (existedUser) {
       throw new HttpException('Email already in use', HttpStatus.CONFLICT);
@@ -46,7 +46,7 @@ export class UsersController {
   async signIn(@Body() loginUserDto: LoginUserDto) {
     const { email, password } = loginUserDto;
 
-    const user = await this.usersService.findEmail(email);
+    const user = await this.usersService.findByEmail(email);
 
     if (!user) {
       throw new HttpException(
@@ -79,8 +79,21 @@ export class UsersController {
   async getCurrent(@Request() req) {
     const { email, name } = req.user;
 
-    const { token } = await this.usersService.findEmail(email);
+    const { token } = await this.usersService.findByEmail(email);
 
     return { name, email, token };
+  }
+
+  @UseGuards(AuthGuard)
+  @Post('logout')
+  @HttpCode(200)
+  async logout(@Request() req) {
+    const { _id } = req.user;
+
+    await this.usersService.removeToken(_id);
+
+    return {
+      message: 'Logout success',
+    };
   }
 }

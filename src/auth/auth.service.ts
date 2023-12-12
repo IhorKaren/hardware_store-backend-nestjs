@@ -20,8 +20,13 @@ export class UsersService {
     return createdUser;
   }
 
-  async findEmail(email: string): Promise<User | null> {
+  async findByEmail(email: string): Promise<User | null> {
     const user = await this.userModel.findOne({ email });
+    return user || null;
+  }
+
+  async findById(_id: string): Promise<User | null> {
+    const user = await this.userModel.findById(_id);
     return user || null;
   }
 
@@ -29,5 +34,9 @@ export class UsersService {
     const token = await this.jwtService.signAsync({ _id });
     const user = await this.userModel.findByIdAndUpdate(_id, { token });
     return { ...user, token };
+  }
+
+  async removeToken(_id: Types.ObjectId): Promise<void> {
+    await this.userModel.findByIdAndUpdate(_id, { token: '' });
   }
 }
